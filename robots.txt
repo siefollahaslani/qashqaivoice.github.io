@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://qashqivoice.github.io/sitemap.xml
