@@ -28,7 +28,9 @@ h1 {
 </style>
 </head>
 <body>
+
 <h1>🌍 QashqAI Voice</h1>
+
 <p>🎙️ <strong>Welcome! خوش آمدید! Hoş geldiniz!</strong></p>
 <p>QashqAI Voice is here to preserve and amplify the forgotten voices of marginalized communities.</p>
 <p>قشقایی ویس آمده است تا صداهای فراموش‌شده را ثبت کند و به آنها قدرت ببخشد.</p>
@@ -36,10 +38,11 @@ h1 {
 
 <button id="recordButton" class="button">🎤 Record Your Voice</button>
 <p id="status"></p>
-<audio id="audioPlayback" controls style="display:none"></audio>
+
+<audio id="audioPlayback" controls style="display:none; margin-top:1rem;"></audio>
 
 <p>Contact: <a href="mailto:siefi.aslani@gmail.com">siefi.aslani@gmail.com</a></p>
-<p>GitHub: <a href="https://github.com/siefollahaslani/qashqaivoice.github.io" target="_blank">Project Repository</a></p>
+<p>GitHub: <a href="https://github.com/siefollahaslani/qashqaivoice.github.io">Project Repository</a></p>
 
 <script>
 const recordButton = document.getElementById('recordButton');
@@ -50,7 +53,7 @@ let mediaRecorder;
 
 recordButton.addEventListener('click', () => {
     if (!navigator.mediaDevices) {
-        status.textContent = "Recording not supported on this browser.";
+        status.textContent = "Recording not supported on this device.";
         return;
     }
 
@@ -59,7 +62,11 @@ recordButton.addEventListener('click', () => {
 
     navigator.mediaDevices.getUserMedia({ audio: true })
     .then(stream => {
-        mediaRecorder = new MediaRecorder(stream);
+        const mimeType = MediaRecorder.isTypeSupported('audio/mp4') 
+            ? 'audio/mp4' 
+            : 'audio/webm';
+        mediaRecorder = new MediaRecorder(stream, { mimeType });
+
         mediaRecorder.start();
 
         mediaRecorder.ondataavailable = e => {
@@ -67,8 +74,8 @@ recordButton.addEventListener('click', () => {
         };
 
         mediaRecorder.onstop = () => {
-            const blob = new Blob(chunks, { type: 'audio/webm' });
-            const audioURL = window.URL.createObjectURL(blob);
+            const blob = new Blob(chunks, { type: mediaRecorder.mimeType });
+            const audioURL = URL.createObjectURL(blob);
             audioPlayback.src = audioURL;
             audioPlayback.style.display = 'block';
             status.textContent = "Recording complete.";
@@ -78,8 +85,7 @@ recordButton.addEventListener('click', () => {
 
         setTimeout(() => {
             mediaRecorder.stop();
-        }, 5000); // ضبط ۵ ثانیه
-
+        }, 5000); // 5 ثانیه ضبط
     })
     .catch(err => {
         status.textContent = "Microphone access denied.";
@@ -87,5 +93,6 @@ recordButton.addEventListener('click', () => {
     });
 });
 </script>
+
 </body>
 </html>
