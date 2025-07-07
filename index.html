@@ -5,26 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QashqAI Voice</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        padding: 2rem;
-        background-color: #f7f7f7;
-    }
-    .button {
-        display: inline-block;
-        margin: 1rem;
-        padding: 1rem 2rem;
-        background: #4CAF50;
-        color: white;
-        text-decoration: none;
-        font-size: 1.2rem;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    h1 {
-        color: #333;
-    }
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 2rem;
+    background-color: #f7f7f7;
+}
+.button {
+    display: inline-block;
+    margin: 1rem;
+    padding: 1rem 2rem;
+    background: #4CAF50;
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+h1 {
+    color: #333;
+}
 </style>
 </head>
 <body>
@@ -36,10 +36,10 @@
 
 <button id="recordButton" class="button">🎤 Record Your Voice</button>
 <p id="status"></p>
-<audio id="audioPlayback" controls style="display:none;"></audio>
+<audio id="audioPlayback" controls style="display:none"></audio>
 
 <p>Contact: <a href="mailto:siefi.aslani@gmail.com">siefi.aslani@gmail.com</a></p>
-<p>GitHub: <a href="https://github.com/siefollahaslani/qashqaivoice.github.io">Project Repository</a></p>
+<p>GitHub: <a href="https://github.com/siefollahaslani/qashqaivoice.github.io" target="_blank">Project Repository</a></p>
 
 <script>
 const recordButton = document.getElementById('recordButton');
@@ -53,6 +53,7 @@ recordButton.addEventListener('click', () => {
         status.textContent = "Recording not supported on this browser.";
         return;
     }
+
     status.textContent = "Recording...";
     recordButton.disabled = true;
 
@@ -66,17 +67,19 @@ recordButton.addEventListener('click', () => {
         };
 
         mediaRecorder.onstop = () => {
-            const blob = new Blob(chunks, { 'type': 'audio/ogg; codecs=opus' });
+            const blob = new Blob(chunks, { type: 'audio/webm' });
             const audioURL = window.URL.createObjectURL(blob);
             audioPlayback.src = audioURL;
             audioPlayback.style.display = 'block';
             status.textContent = "Recording complete.";
             recordButton.disabled = false;
+            chunks = [];
         };
 
         setTimeout(() => {
             mediaRecorder.stop();
-        }, 5000); // 5 seconds
+        }, 5000); // ضبط ۵ ثانیه
+
     })
     .catch(err => {
         status.textContent = "Microphone access denied.";
