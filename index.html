@@ -5,37 +5,84 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QashqAI Voice</title>
 <style>
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  padding: 2rem;
-  background-color: #f7f7f7;
-}
-a.button {
-  display: inline-block;
-  margin: 1rem;
-  padding: 1rem 2rem;
-  background: #4CAF50;
-  color: white;
-  text-decoration: none;
-  font-size: 1.2rem;
-  border-radius: 5px;
-}
-h1 {
-  color: #333;
-}
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 2rem;
+        background-color: #f7f7f7;
+    }
+    .button {
+        display: inline-block;
+        margin: 1rem;
+        padding: 1rem 2rem;
+        background: #4CAF50;
+        color: white;
+        text-decoration: none;
+        font-size: 1.2rem;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    h1 {
+        color: #333;
+    }
 </style>
 </head>
 <body>
 <h1>🌍 QashqAI Voice</h1>
 <p>🎙️ <strong>Welcome! خوش آمدید! Hoş geldiniz!</strong></p>
 <p>QashqAI Voice is here to preserve and amplify the forgotten voices of marginalized communities.</p>
-<p>قشقایی وویس آمده است تا صداهای فراموش‌شده را ثبت کند و به آنها قدرت ببخشد.</p>
+<p>قشقایی ویس آمده است تا صداهای فراموش‌شده را ثبت کند و به آنها قدرت ببخشد.</p>
 <p>QashqAI Voice, unutulmuş sesleri kaydetmek ve onlara güç vermek için burada.</p>
 
-<a href="#" class="button">🎤 Record Your Voice</a>
+<button id="recordButton" class="button">🎤 Record Your Voice</button>
+<p id="status"></p>
+<audio id="audioPlayback" controls style="display:none;"></audio>
 
 <p>Contact: <a href="mailto:siefi.aslani@gmail.com">siefi.aslani@gmail.com</a></p>
-<p>GitHub: <a href="https://github.com/SiefollahAslani/qashqaivoice-site" target="_blank">Project Repository</a></p>
+<p>GitHub: <a href="https://github.com/siefollahaslani/qashqaivoice.github.io">Project Repository</a></p>
+
+<script>
+const recordButton = document.getElementById('recordButton');
+const status = document.getElementById('status');
+const audioPlayback = document.getElementById('audioPlayback');
+let chunks = [];
+let mediaRecorder;
+
+recordButton.addEventListener('click', () => {
+    if (!navigator.mediaDevices) {
+        status.textContent = "Recording not supported on this browser.";
+        return;
+    }
+    status.textContent = "Recording...";
+    recordButton.disabled = true;
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
+
+        mediaRecorder.ondataavailable = e => {
+            chunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(chunks, { 'type': 'audio/ogg; codecs=opus' });
+            const audioURL = window.URL.createObjectURL(blob);
+            audioPlayback.src = audioURL;
+            audioPlayback.style.display = 'block';
+            status.textContent = "Recording complete.";
+            recordButton.disabled = false;
+        };
+
+        setTimeout(() => {
+            mediaRecorder.stop();
+        }, 5000); // 5 seconds
+    })
+    .catch(err => {
+        status.textContent = "Microphone access denied.";
+        recordButton.disabled = false;
+    });
+});
+</script>
 </body>
 </html>
