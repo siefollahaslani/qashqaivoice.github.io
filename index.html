@@ -28,7 +28,6 @@ h1 {
 </style>
 </head>
 <body>
-
 <h1>🌍 QashqAI Voice</h1>
 
 <p>🎙️ <strong>Welcome! خوش آمدید! Hoş geldiniz!</strong></p>
@@ -38,7 +37,6 @@ h1 {
 
 <button id="recordButton" class="button">🎤 Record Your Voice</button>
 <p id="status"></p>
-
 <audio id="audioPlayback" controls style="display:none; margin-top:1rem;"></audio>
 
 <p>Contact: <a href="mailto:siefi.aslani@gmail.com">siefi.aslani@gmail.com</a></p>
@@ -48,12 +46,13 @@ h1 {
 const recordButton = document.getElementById('recordButton');
 const status = document.getElementById('status');
 const audioPlayback = document.getElementById('audioPlayback');
-let chunks = [];
+
 let mediaRecorder;
+let chunks = [];
 
 recordButton.addEventListener('click', () => {
     if (!navigator.mediaDevices) {
-        status.textContent = "Recording not supported on this device.";
+        status.textContent = "Recording not supported in this browser.";
         return;
     }
 
@@ -62,11 +61,7 @@ recordButton.addEventListener('click', () => {
 
     navigator.mediaDevices.getUserMedia({ audio: true })
     .then(stream => {
-        const mimeType = MediaRecorder.isTypeSupported('audio/mp4') 
-            ? 'audio/mp4' 
-            : 'audio/webm';
-        mediaRecorder = new MediaRecorder(stream, { mimeType });
-
+        mediaRecorder = new MediaRecorder(stream);
         mediaRecorder.start();
 
         mediaRecorder.ondataavailable = e => {
@@ -74,8 +69,8 @@ recordButton.addEventListener('click', () => {
         };
 
         mediaRecorder.onstop = () => {
-            const blob = new Blob(chunks, { type: mediaRecorder.mimeType });
-            const audioURL = URL.createObjectURL(blob);
+            const blob = new Blob(chunks, { type: 'audio/webm' });
+            const audioURL = window.URL.createObjectURL(blob);
             audioPlayback.src = audioURL;
             audioPlayback.style.display = 'block';
             status.textContent = "Recording complete.";
@@ -85,7 +80,7 @@ recordButton.addEventListener('click', () => {
 
         setTimeout(() => {
             mediaRecorder.stop();
-        }, 5000); // 5 ثانیه ضبط
+        }, 5000); // ضبط ۵ ثانیه
     })
     .catch(err => {
         status.textContent = "Microphone access denied.";
