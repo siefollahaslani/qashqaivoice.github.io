@@ -27,36 +27,40 @@ const audioPlayback = document.getElementById("audioPlayback");
 
 let mediaRecorder;
 let audioChunks = [];
+let recording = false;
 
 recordButton.addEventListener("click", () => {
-    if (!mediaRecorder || mediaRecorder.state === "inactive") {
+    if (!recording) {
         navigator.mediaDevices.getUserMedia({ audio: true })
         .then(stream => {
             mediaRecorder = new MediaRecorder(stream);
             mediaRecorder.start();
             status.textContent = "Recording... / در حال ضبط / Kayıt yapılıyor...";
+            recordButton.textContent = "⏹️ Stop / توقف / Durdur";
             audioChunks = [];
+            recording = true;
 
-            mediaRecorder.addEventListener("dataavailable", event => {
-                audioChunks.push(event.data);
-            });
+            mediaRecorder.ondataavailable = event => {
+                if (event.data.size > 0) {
+                    audioChunks.push(event.data);
+                }
+            };
 
-            mediaRecorder.addEventListener("stop", () => {
-                const audioBlob = new Blob(audioChunks);
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                 const audioUrl = URL.createObjectURL(audioBlob);
                 audioPlayback.src = audioUrl;
                 status.textContent = "Stopped. ▶️ Listen / توقف / Dinleyin";
-            });
-
-            recordButton.textContent = "⏹️ Stop / توقف / Durdur";
+                recordButton.textContent = "🎤 Start / شروع / Başla";
+                recording = false;
+            };
         })
         .catch(err => {
             console.error(err);
             status.textContent = "❌ Access denied / دسترسی رد شد / Erişim reddedildi";
         });
-    } else if (mediaRecorder.state === "recording") {
+    } else {
         mediaRecorder.stop();
-        recordButton.textContent = "🎤 Start / شروع / Başla";
     }
 });
 </script>
