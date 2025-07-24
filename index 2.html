@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>قشقائي فويس - تفاعلي</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            color: #222;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #006699;
+        }
+        .button {
+            background-color: #006699;
+            color: white;
+            padding: 14px 24px;
+            margin: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 250px;
+        }
+    </style>
+    <script>
+        function respond(question) {
+            let answers = {
+                "arabic": "نعم، ندعم اللغة العربية.",
+                "who": "أنا نظام صوتي لحفظ اللغات والثقافات المهددة.",
+                "goal": "هدفي هو تمكين المجتمعات غير المرئية من خلال الصوت.",
+                "qashqai": "قشقائي فويس هو مشروع لحماية اللغات والثقافات المهددة باستخدام الذكاء الاصطناعي.",
+                "founder": "مؤسس هذا النظام هو سيف الله أصلاني، من مدينة بريمن، ألمانيا."
+            };
+            alert(answers[question]);
+        }
+    </script>
+</head>
+<body>
+    <h1>مرحباً بكم في قشقائي فويس</h1>
+    <p>اضغط على أي سؤال للحصول على الإجابة:</p>
+    <button class="button" onclick="respond('arabic')">هل تدعم اللغة العربية؟</button><br>
+    <button class="button" onclick="respond('who')">من أنت؟</button><br>
+    <button class="button" onclick="respond('goal')">ما هو هدفك؟</button><br>
+    <button class="button" onclick="respond('qashqai')">ما هو قشقائي فويس؟</button><br>
+    <button class="button" onclick="respond('founder')">من هو مؤسسك؟</button>
+</body>
+</html>
